@@ -1,0 +1,237 @@
+Creating an employeee database which includes details like
+1. Employee ID
+2. Employee Name
+3. Employee Age
+4. Employee Address
+5. Employee Salary
+6. Employee Department
+7. Employee City
+8. Employee joining date
+9. Employee DOB
+10.Employee Marital status
+
+
+->Database URL	jdbc:derby://localhost:1527/employee
+usr:emp
+pwd:emp
+
+->Now Creating a webpage (HTML):
+
+
+html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>abi</title>
+        
+         <meta name="description" content="website description" />
+  <meta name="keywords" content="website keywords, website keywords" />
+  <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
+  <link rel="stylesheet" type="text/css" href="style/style.css" title="style" />
+    </head>
+    <body>
+        
+         <div id="main">
+    <div id="header">
+      <div id="logo">
+        <div id="logo_text">
+          <!-- class="logo_colour", allows you to change the colour of the text -->
+          <h1><a href="index.html">Abinaya<span class="logo_colour">Infotech</span></a></h1>
+          <h2>www.abinayainfotech.com</h2>
+        </div>
+      </div>
+      <div id="menubar">
+        <ul id="menu">
+          <!-- put class="selected" in the li tag for the selected page - to highlight which page you're on -->
+          <li class="selected"><a href="#">Home</a></li>
+          <li><a href="#">Examples</a></li>
+          <li><a href="#">A Page</a></li>
+          <li><a href="#">Another Page</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="site_content">
+      
+      <div id="content">
+        
+          <form action="regservlet" method="post">
+              
+              Enter your Employee Id : <input type="number" name="id"><br>
+              Enter your name :<input type="text" name="name"><br>
+              Enter your Age :<input type="number" name="age"><br>
+              Enter your address :<textarea name="address"></textarea><br>
+              Enter your salary :<input type="number" name="salary"><br>
+              Enter your department : <input type="text" name="dept"><br>
+              Enter your City name :<input type="text" name="city"><br>
+              Enter your join date :<input type="text" name="joindt"><br>
+              Enter your DOB :<input type="text" name="dob"><br>
+              Enter your marital status :<input type="text" name="mrstatus"><br>
+              <input type="submit" value="Submit">
+                                                   
+              
+              
+          </form>
+          
+      </div>
+    </div>
+    <div id="content_footer"></div>
+    <div id="footer">
+      Copyright &copy; </div>
+  </div> 
+    </body>
+</html>
+
+->Now Creating a Servlet to get the employee details:
+
+
+
+
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author user
+ */
+@WebServlet(urlPatterns = {"/regservlet"})
+public class regservlet extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code.*/ 
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet regservlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet regservlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        //processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id=Integer.parseInt( req.getParameter("id"));
+       String name=req.getParameter("name");
+           int age=Integer.parseInt( req.getParameter("age"));
+           
+           String address=req.getParameter("address");
+           
+               int salary=Integer.parseInt( req.getParameter("salary"));
+           
+               String dept=req.getParameter("dept");
+               
+               String city=req.getParameter("city");
+               
+               String joindt=req.getParameter("joindt");
+               String dob=req.getParameter("dob");
+               String mrstatus=req.getParameter("mrstatus");
+           
+           
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+            
+            Connection con=DriverManager.getConnection("jdbc:derby://localhost:1527/employee", "emp", "emp");
+            
+            Statement stmt=con.createStatement();
+            int x=stmt.executeUpdate("insert into empdt values("+id+",'"+name+"',"+age+",'"+address+"',"+salary+",'"+dept+"','"+city+"','"+joindt+"','"+dob+"','"+mrstatus+"')");
+            
+            if(x>0)
+            {
+            PrintWriter out=response.getWriter();
+            
+            out.print("values added successfully");
+            
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(regservlet.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+    }
+
+
+---->analysing the employee details:
+
+1.Total number of employees :  
+	cmd: select count(eid) from empdt;
+2.Total number of employees based on depatment wise:
+	cmd: select dept,count(eid)from empdt group by dept
+3.Total number of employees based on city wise:
+	cmd: select city,count(eid)from empdt group by city
+4.Total average salary:
+	cmd: select avg(salary) from empdt; 
+5.Total average salary based on department wise:
+	cmd:select dept,avg(salary) from empdt group by dept; 
+6.How many employees are single in marital status?
+	cmd:select count(eid) from empdt where marrstatus='single';
+7.How many employees will retire at age 60 in next 2 years?
+	cmd:select count(age) from empdt where ((age+2)=60);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
